@@ -111,6 +111,9 @@ public class BasicLogonControlCenter implements LogonControlCenter{
 					sessionStorage.remove(session.getId());
 				} 
 			}, "logoutall");
+			realController.oncheck().addLast(params->{
+				
+			}, "check");
 		}
 	}
 	

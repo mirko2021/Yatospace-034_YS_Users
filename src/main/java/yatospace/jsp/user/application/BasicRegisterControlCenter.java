@@ -3,6 +3,8 @@ package yatospace.jsp.user.application;
 import yatospace.jsp.user.controller.BasicRegistrationController;
 import yatospace.jsp.user.controller.RegisterController;
 import yatospace.jsp.user.engine.AuthenticationEngine;
+import yatospace.jsp.user.event.ParameterObject;
+import yatospace.jsp.user.event.ParameterType;
 import yatospace.jsp.user.io.UserStorage;
 import yatospace.jsp.user.object.User;
 
@@ -28,16 +30,52 @@ public class BasicRegisterControlCenter implements RegisterControlCenter{
 			BasicRegistrationController realController = (BasicRegistrationController) registerController;
 			realController.onregister().addLast(params->{
 				User user = (User) params.get("user").getParameterValue(); 
-				synchronized(authenticationEngine) {
-					authenticationEngine.storePassword(user.getPassword()); 
-					user.setPassword(authenticationEngine.passwordRecord());
-					userStorage.add(user); 
+				if(userStorage.get(user.getUsername())!=null) {
+					ParameterObject success = new ParameterObject("success");
+					success.setOutputProvider(this); 
+					success.setParameterClazz(Boolean.class); 
+					success.setParameterType(ParameterType.OUT); 
+					success.setParameterValue(false); 
+					params.add(success); 
+				}else {
+					synchronized(authenticationEngine) {
+						authenticationEngine.storePassword(user.getPassword()); 
+						user.setPassword(authenticationEngine.passwordRecord());
+						userStorage.add(user); 
+					}
+					ParameterObject success = new ParameterObject("success");
+					success.setOutputProvider(this); 
+					success.setParameterClazz(Boolean.class); 
+					success.setParameterType(ParameterType.OUT); 
+					success.setParameterValue(true); 
+					params.add(success); 
 				}
 			}, "register");
 			realController.onderegister().addLast(params->{
 				String username = (String) params.get("username").getParameterValue(); 
-				userStorage.remove(username); 
+				if(userStorage.get(username)!=null) {
+					userStorage.remove(username); 
+					ParameterObject success = new ParameterObject("success");
+					success.setOutputProvider(this); 
+					success.setParameterClazz(Boolean.class); 
+					success.setParameterType(ParameterType.OUT); 
+					success.setParameterValue(true); 
+					params.add(success); 
+				}else {
+					ParameterObject success = new ParameterObject("success");
+					success.setOutputProvider(this); 
+					success.setParameterClazz(Boolean.class); 
+					success.setParameterType(ParameterType.OUT); 
+					success.setParameterValue(false); 
+					params.add(success); 
+				}
 			}, "deregister");
+			realController.onupdate().addLast(params->{
+				
+			}, "update");
+			realController.oncheck().addLast(params->{
+				
+			}, "check");
 		}
 	}
 	

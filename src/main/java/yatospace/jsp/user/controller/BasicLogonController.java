@@ -22,9 +22,12 @@ public class BasicLogonController implements LogonController{
 	private BasicEventMap onlogoutall = new BasicEventMap(); 
 	private BasicEventMap prelogoutall = new BasicEventMap(); 
 	private BasicEventMap postlogoutall = new BasicEventMap(); 
+	private BasicEventMap oncheck = new BasicEventMap();
+	private BasicEventMap precheck = new BasicEventMap();
+	private BasicEventMap postcheck = new BasicEventMap();
 	
 	@Override
-	public void login(HttpSession session, String username, String password) {
+	public ParameterMap login(HttpSession session, String username, String password) {
 		ParameterMap map = new ParameterMap(); 
 		ParameterObject usernameParam = new ParameterObject("username"); 
 		ParameterObject passwordParam = new ParameterObject("password"); 
@@ -43,28 +46,50 @@ public class BasicLogonController implements LogonController{
 		prelogin.run(map);
 		onlogin.run(map); 
 		postlogin.run(map); 
+		return map;
 	}
 
 	@Override
-	public void logout(HttpSession session) {
+	public ParameterMap logout(HttpSession session) {
 		ParameterMap map = new ParameterMap(); 
 		ParameterObject usernameParam = new ParameterObject("session"); 
 		usernameParam.setInputProvider(this);
 		prelogout.run(map); 
 		onlogout.run(map);
 		postlogout.run(map); 
+		return map; 
 	}
 
 	@Override
-	public void logoutAll(String username) {
+	public ParameterMap logoutAll(String username) {
 		ParameterMap map = new ParameterMap(); 
 		ParameterObject usernameParam = new ParameterObject("username");  
 		usernameParam.setInputProvider(this);
 		prelogoutall.run(map);
 		onlogoutall.run(map); 
 		postlogoutall.run(map);
+		return map;
 	}
 
+	@Override
+	public ParameterMap check(String username, String password) {
+		ParameterMap map = new ParameterMap(); 
+		ParameterObject usernameParam = new ParameterObject("username"); 
+		ParameterObject passwordParam = new ParameterObject("password"); 
+		usernameParam.setParameterClazz(String.class);
+		passwordParam.setParameterClazz(String.class);
+		usernameParam.setInputProvider(this);
+		passwordParam.setInputProvider(this);
+		usernameParam.setParameterValue(username);
+		passwordParam.setParameterValue(password);
+		map.add(usernameParam);
+		map.add(passwordParam);
+		precheck.run(map);
+		oncheck.run(map); 
+		postcheck.run(map); 
+		return map;
+	}
+	
 	@Override
 	public BasicEventMap prelogin() {
 		return prelogin;
@@ -105,5 +130,19 @@ public class BasicLogonController implements LogonController{
 	@Override
 	public EventMap postlogoutAll() {
 		return postlogoutall;
+	}
+	
+	public EventMap oncheck() {
+		return oncheck; 
+	}
+
+	@Override
+	public EventMap precheck() {
+		return precheck;
+	}
+
+	@Override
+	public EventMap postcheck() {
+		return postcheck;
 	}
 }
