@@ -1,0 +1,8 @@
+@charset "UTF-8";
+
+table.report_table, table.report_table tr, table.report_table td{
+	border: 1px solid black; 
+	border-collapse: collapse;
+	padding: 0px 5px 0px 5px;  
+}
+

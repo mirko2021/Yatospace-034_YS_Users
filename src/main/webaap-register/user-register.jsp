@@ -12,6 +12,10 @@
 			<dd><br></dd>
 			<dd><a href='${pageContext.request.contextPath}/FORMS/user-register-classic-form.jsp' target='_blank'>Classic register form</a></dd>
 			<dd><br></dd>
+			<dt>Register reports</dt>
+			<dd><br></dd>
+			<dd><a href='${pageContext.request.contextPath}/REPORTS/user-register-classic-report.jsp' target='_blank'>Classic register report</a></dd>
+			<dd><br></dd>
 			<dt>Links</dt>
 			<dd><br></dd>
 			<dd><a href='${pageContext.request.contextPath}/index.jsp'>Index</a></dd>
