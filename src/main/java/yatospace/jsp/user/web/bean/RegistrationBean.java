@@ -2,6 +2,7 @@ package yatospace.jsp.user.web.bean;
 
 import java.io.Serializable;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import yatospace.jsp.user.controller.RegisterController;
@@ -112,10 +113,66 @@ public class RegistrationBean implements Serializable{
 		}
 	}
 	
+	public void deregister(HttpServletRequest request, PageExecutingBean pageExcutingBean) {
+		RegisterController registerController = SessionContollersListener.getRegisterControlCenter(request.getSession()).getRegisterController();
+		String username = request.getParameter("erase_form_input"); 
+		if(pageExcutingBean.getStatus().liveMessages().size()==0) pageExcutingBean.getStatus().liveMessages().add(""); 
+		try {
+			if(username.trim().length()==0) {
+				pageExcutingBean.getStatus().liveMessages().set(0, "Брисање из регистра није успјело.");
+				return; 
+			}
+			registerController.deregister(username);
+			pageExcutingBean.getStatus().liveMessages().set(0, "Брисање из регистра је успјело.");
+		}catch(Exception ex) {
+			pageExcutingBean.getStatus().liveMessages().set(0, "Брисање из регистра није успјело.");
+		}
+	}
+	
 	public void resetForRegister() {
 		username = ""; 
 		password = ""; 
 		name = ""; 
 		surname = ""; 
+	}
+	
+	public void resetForUpdate() {
+		username = ""; 
+		password = ""; 
+		name = ""; 
+		surname = ""; 
+	}
+	
+	
+	public void update(HttpSession session, PageExecutingBean pageExcutingBean) {
+		try {
+			UserStorage storage = SessionContollersListener.getRegisterControlCenter(session).getUserStorage();
+			RegisterController controller = SessionContollersListener.getRegisterControlCenter(session).getRegisterController();
+			if(pageExcutingBean.getStatus().liveMessages().size()==0) pageExcutingBean.getStatus().liveMessages().add(""); 
+			User user = storage.get(username);
+			if(user==null) throw new RuntimeException();
+			user.setFirstname(name);
+			user.setSecondname(surname);
+			controller.upadte(username, user); 
+			pageExcutingBean.getStatus().liveMessages().set(0, "Измјене корисника су успјешне.");
+		}catch(Exception ex) {
+			pageExcutingBean.getStatus().liveMessages().set(0, "Измјене корисника нису успјешне.");
+		}
+	}
+	
+	public void acceptByUsername(HttpServletRequest request, PageExecutingBean pageExcutingBean) {
+		try {
+			UserStorage storage = SessionContollersListener.getRegisterControlCenter(request.getSession()).getUserStorage();
+			User user = storage.get(request.getParameter("username"));
+			if(pageExcutingBean.getStatus().liveMessages().size()==0) pageExcutingBean.getStatus().liveMessages().add(""); 
+			if(user==null) resetForUpdate(); 
+			if(user==null) throw new NullPointerException(); 
+			password = "";
+			username = user.getUsername();
+			name = user.getFirstname();
+			surname = user.getSecondname();
+		}catch(Exception ex) {
+			pageExcutingBean.getStatus().liveMessages().set(0, "Корисник са датим корисничким именом није нађен. Форма је ресетована.");
+		}
 	}
 }
