@@ -71,10 +71,55 @@ public class BasicRegisterControlCenter implements RegisterControlCenter{
 				}
 			}, "deregister");
 			realController.onupdate().addLast(params->{
-				
+				User user = (User) params.get("user").getParameterValue(); 
+				String username = (String) params.get("username").getParameterValue(); 
+				if(userStorage.get(username)==null) {
+					ParameterObject success = new ParameterObject("success");
+					success.setOutputProvider(this); 
+					success.setParameterClazz(Boolean.class); 
+					success.setParameterType(ParameterType.OUT); 
+					success.setParameterValue(false); 
+					params.add(success); 
+					return; 
+				}
+				if(!user.getUsername().contentEquals(username))
+				if(userStorage.get(user.getUsername())!=null) {
+					ParameterObject success = new ParameterObject("success");
+					success.setOutputProvider(this); 
+					success.setParameterClazz(Boolean.class); 
+					success.setParameterType(ParameterType.OUT); 
+					success.setParameterValue(false); 
+					params.add(success); 
+					return;
+				}
+				User oldUser = userStorage.get(username); 
+				oldUser.apply(user); 
+				ParameterObject success = new ParameterObject("success");
+				success.setOutputProvider(this); 
+				success.setParameterClazz(Boolean.class); 
+				success.setParameterType(ParameterType.OUT); 
+				success.setParameterValue(true); 
+				params.add(success); 
 			}, "update");
 			realController.oncheck().addLast(params->{
-				
+				String username = (String) params.get("username").getParameterValue(); 
+				String password = (String) params.get("password").getParameterValue();
+				User user = userStorage.get(username); 
+				boolean res = true;
+				if(user==null) {res = false;}
+				else {
+					synchronized(authenticationEngine) {
+						authenticationEngine.storePassword(password);
+						String rec = authenticationEngine.passwordRecord();
+						res = rec.contentEquals(user.getPassword());
+					}
+				}
+				ParameterObject result = new ParameterObject("result");
+				result.setOutputProvider(this); 
+				result.setParameterClazz(Boolean.class); 
+				result.setParameterType(ParameterType.OUT); 
+				result.setParameterValue(res); 
+				params.add(result); 
 			}, "check");
 		}
 	}

@@ -66,9 +66,9 @@ public class BasicRegistrationController implements RegisterController{
 		usernameParam.setParameterValue(username);
 		map.add(usernameParam);
 		map.add(userParam);
-		preregister.run(map);
-		onregister.run(map); 
-		postregister.run(map);
+		preupdate.run(map);
+		onupdate.run(map); 
+		postupdate.run(map);
 		return map;
 	}
 	

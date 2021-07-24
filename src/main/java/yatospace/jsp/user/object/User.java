@@ -85,4 +85,33 @@ public class User implements Serializable, Cloneable, Comparable<User>{
 	public int compareTo(User o) {
 		return username.compareTo(o.username);
 	} 	
+	
+	@Override
+	public User clone() {
+		User user = new User();
+		user.username = username;
+		user.firstname = firstname;
+		user.password = password;
+		user.secondname = secondname;
+		user.usernotes = usernotes;
+		return user;
+	}
+	
+	public void reset(){
+		this.username = ""; 
+		this.firstname = ""; 
+		this.password = ""; 
+		this.usernotes = "";
+		this.secondname = ""; 
+	}
+	
+	public void apply(User user) {
+		if(user==null) reset();
+		if(user==null) return; 
+		this.username = user.username; 
+		this.firstname = user.firstname; 
+		this.password = user.password; 
+		this.secondname = user.secondname;
+		this.usernotes = user.usernotes; 
+	}
 }
