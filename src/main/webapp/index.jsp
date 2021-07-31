@@ -10,6 +10,7 @@
 			<dt>Applications parts</dt>
 			<dd><br></dd>
 			<dd><a href='${pageContext.request.contextPath}/user-register.jsp'>User registration</a></dd>
+			<dd><a href='${pageContext.request.contextPath}/user-logon.jsp'>User logon</a></dd>
 		</dl>
 	</body>
 </html>

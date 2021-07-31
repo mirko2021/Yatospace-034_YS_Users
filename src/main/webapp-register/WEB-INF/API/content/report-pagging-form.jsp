@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
-<jsp:useBean id='reportPaggingBean' class='yatospace.jsp.user.web.bean.PaggingBean' scope='session'></jsp:useBean>
+<jsp:useBean id='reportPaggingBeanUS' class='yatospace.jsp.user.web.bean.PaggingBean' scope='session'></jsp:useBean>
 
 <div id='report_page_place'>
 	<form id='report_page_form' name='report_page_form' method='POST'>

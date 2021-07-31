@@ -13,6 +13,7 @@ import yatospace.jsp.user.io.SessionStorage;
 import yatospace.jsp.user.io.UserStorage;
 import yatospace.jsp.user.object.User;
 import yatospace.jsp.user.util.UserHttpSessionRepresentation;
+import yatospace.jsp.user.web.bean.LogonBean;
 
 /**
  * Basic implementation of the logon control center. 
@@ -58,6 +59,7 @@ public class BasicLogonControlCenter implements LogonControlCenter{
 					successParam.setParameterType(ParameterType.OUT); 
 					successParam.setParameterClazz(Boolean.class); 
 					successParam.setParameterValue(false);
+					params.add(successParam);
 					return; 
 				} 
 				if(userStorage.get(username)==null) {
@@ -66,6 +68,7 @@ public class BasicLogonControlCenter implements LogonControlCenter{
 					successParam.setParameterType(ParameterType.OUT); 
 					successParam.setParameterClazz(Boolean.class); 
 					successParam.setParameterValue(false);
+					params.add(successParam);
 					return; 
 				};
 				User user = userStorage.get(username);
@@ -80,6 +83,7 @@ public class BasicLogonControlCenter implements LogonControlCenter{
 					successParam.setParameterType(ParameterType.OUT); 
 					successParam.setParameterClazz(Boolean.class); 
 					successParam.setParameterValue(false);
+					params.add(successParam);
 					return; 
 				};
 				UserHttpSessionRepresentation userHttpSession = new UserHttpSessionRepresentation(session);
@@ -90,6 +94,7 @@ public class BasicLogonControlCenter implements LogonControlCenter{
 				successParam.setParameterType(ParameterType.OUT); 
 				successParam.setParameterClazz(Boolean.class); 
 				successParam.setParameterValue(true);
+				params.add(successParam);
 			}, "login");
 			
 			realController.onlogout().addLast(params->{
@@ -97,22 +102,54 @@ public class BasicLogonControlCenter implements LogonControlCenter{
 				String username = (String) session.getAttribute("username");
 				if(username==null) return; 
 				sessionStorage.remove(session.getId());
-				session.removeAttribute("username"); 
+				session.removeAttribute("username");
+				ParameterObject result = new ParameterObject("result");
+				result.setOutputProvider(this); 
+				result.setParameterClazz(Boolean.class); 
+				result.setParameterType(ParameterType.OUT); 
+				result.setParameterValue(true); 
+				params.add(result);
 			}, "logout");
 			realController.onlogoutAll().addLast(params->{
-				String username = (String) params.get("username").getParameterValue(); 
-				for(var sessionRep: userSessionEnviroment.listUserHttp()) {
+				String username = (String) params.get("username").getParameterValue();
+				for(var sessionRep: userSessionEnviroment.listHttp()) {
 					if(sessionRep.asUserHttpSessionRepresentation()==null) continue; 
 					HttpSession session = sessionRep.asUserHttpSessionRepresentation().asUserHttpSessionRepresentation().getSession(); 
 					if(session==null) continue; 
 					if(session.getAttribute("username")==null) continue;
 					if(!session.getAttribute("username").toString().contentEquals(username)) continue; 
-					session.removeAttribute("username"); 
+					session.removeAttribute("username");
 					sessionStorage.remove(session.getId());
-				} 
+					LogonBean sessionLogonBean = (LogonBean) session.getAttribute("logonBean"); 
+					sessionLogonBean.resetLogged();
+					sessionLogonBean.reset();
+				}
+				ParameterObject result = new ParameterObject("result");
+				result.setOutputProvider(this); 
+				result.setParameterClazz(Boolean.class); 
+				result.setParameterType(ParameterType.OUT); 
+				result.setParameterValue(true); 
+				params.add(result);
 			}, "logoutall");
 			realController.oncheck().addLast(params->{
-				
+				String username = (String) params.get("username").getParameterValue(); 
+				String password = (String) params.get("password").getParameterValue();
+				User user = userStorage.get(username); 
+				boolean res = true;
+				if(user==null) {res = false;}
+				else {
+					synchronized(authEngine) {
+						authEngine.storePassword(password);
+						String rec = authEngine.passwordRecord();
+						res = rec.contentEquals(user.getPassword());
+					}
+				}
+				ParameterObject result = new ParameterObject("result");
+				result.setOutputProvider(this); 
+				result.setParameterClazz(Boolean.class); 
+				result.setParameterType(ParameterType.OUT); 
+				result.setParameterValue(res); 
+				params.add(result);
 			}, "check");
 		}
 	}

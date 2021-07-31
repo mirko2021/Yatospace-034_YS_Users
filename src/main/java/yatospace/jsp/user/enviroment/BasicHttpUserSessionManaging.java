@@ -26,7 +26,7 @@ public class BasicHttpUserSessionManaging implements HttpUserSessionsManaging{
 	public List<SessionRepresentation> listUser() {
 		ArrayList<SessionRepresentation> target = new ArrayList<>();
 		for(SessionRepresentation rep: storage.list()) 
-			if(rep instanceof UserSessionRepresentation) storage.add(rep);
+			if(rep instanceof UserSessionRepresentation) target.add(rep);
 		return target;
 	}
 
@@ -35,7 +35,7 @@ public class BasicHttpUserSessionManaging implements HttpUserSessionsManaging{
 		ArrayList<SessionRepresentation> target = new ArrayList<>();
 		ArrayList<SessionRepresentation> result = new ArrayList<>();
 		for(SessionRepresentation rep: storage.list()) 
-			if(rep instanceof UserSessionRepresentation) storage.add(rep);
+			if(rep instanceof UserSessionRepresentation) target.add(rep);
 		if(pageNo<=0) return result; pageNo--;
 		if(pageSize<1) pageSize = 1; 
 		int a = Math.min(target.size(), pageSize*pageNo); 
@@ -49,7 +49,7 @@ public class BasicHttpUserSessionManaging implements HttpUserSessionsManaging{
 	public List<SessionRepresentation> listHttp() {
 		ArrayList<SessionRepresentation> target = new ArrayList<>();
 		for(SessionRepresentation rep: storage.list()) 
-			if(rep instanceof BasicHttpSessionRepresentation) storage.add(rep);
+			if(rep instanceof BasicHttpSessionRepresentation) target.add(rep);
 		return target;
 	}
 
@@ -58,7 +58,7 @@ public class BasicHttpUserSessionManaging implements HttpUserSessionsManaging{
 		ArrayList<SessionRepresentation> target = new ArrayList<>();
 		ArrayList<SessionRepresentation> result = new ArrayList<>();
 		for(SessionRepresentation rep: storage.list()) 
-			if(rep instanceof BasicHttpSessionRepresentation) storage.add(rep);
+			if(rep instanceof BasicHttpSessionRepresentation) target.add(rep);
 		if(pageNo<=0) return result; pageNo--;
 		if(pageSize<1) pageSize = 1; 
 		int a = Math.min(target.size(), pageSize*pageNo); 
@@ -72,7 +72,7 @@ public class BasicHttpUserSessionManaging implements HttpUserSessionsManaging{
 	public List<SessionRepresentation> listUserHttp() {
 		ArrayList<SessionRepresentation> target = new ArrayList<>();
 		for(SessionRepresentation rep: storage.list()) 
-			if(rep instanceof UserHttpSessionRepresentation) storage.add(rep);
+			if(rep instanceof UserHttpSessionRepresentation) target.add(rep);
 		return target;
 	}
 
@@ -81,7 +81,7 @@ public class BasicHttpUserSessionManaging implements HttpUserSessionsManaging{
 		ArrayList<SessionRepresentation> target = new ArrayList<>();
 		ArrayList<SessionRepresentation> result = new ArrayList<>();
 		for(SessionRepresentation rep: storage.list()) 
-			if(rep instanceof UserHttpSessionRepresentation) storage.add(rep);
+			if(rep instanceof UserHttpSessionRepresentation) target.add(rep);
 		if(pageNo<=0) return result; pageNo--;
 		if(pageSize<1) pageSize = 1; 
 		int a = Math.min(target.size(), pageSize*pageNo); 

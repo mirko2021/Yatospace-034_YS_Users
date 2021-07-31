@@ -37,12 +37,13 @@ public class BasicLogonController implements LogonController{
 		httpSessionParam.setParameterClazz(HttpSession.class);
 		usernameParam.setInputProvider(this);
 		passwordParam.setInputProvider(this);
-		httpSessionParam.setInputProvider(httpSessionParam);
+		httpSessionParam.setInputProvider(this);
 		usernameParam.setParameterValue(username);
 		passwordParam.setParameterValue(password);
-		httpSessionParam.setParameterValue(httpSessionParam);
+		httpSessionParam.setParameterValue(session);
 		map.add(usernameParam);
 		map.add(passwordParam);
+		map.add(httpSessionParam);
 		prelogin.run(map);
 		onlogin.run(map); 
 		postlogin.run(map); 
@@ -53,7 +54,10 @@ public class BasicLogonController implements LogonController{
 	public ParameterMap logout(HttpSession session) {
 		ParameterMap map = new ParameterMap(); 
 		ParameterObject usernameParam = new ParameterObject("session"); 
+		usernameParam.setParameterClazz(HttpSession.class);
 		usernameParam.setInputProvider(this);
+		usernameParam.setParameterValue(session);
+		map.add(usernameParam);
 		prelogout.run(map); 
 		onlogout.run(map);
 		postlogout.run(map); 
@@ -65,6 +69,9 @@ public class BasicLogonController implements LogonController{
 		ParameterMap map = new ParameterMap(); 
 		ParameterObject usernameParam = new ParameterObject("username");  
 		usernameParam.setInputProvider(this);
+		usernameParam.setParameterValue(username);
+		usernameParam.setParameterClazz(String.class);
+		map.add(usernameParam);
 		prelogoutall.run(map);
 		onlogoutall.run(map); 
 		postlogoutall.run(map);
@@ -81,7 +88,7 @@ public class BasicLogonController implements LogonController{
 		usernameParam.setInputProvider(this);
 		passwordParam.setInputProvider(this);
 		usernameParam.setParameterValue(username);
-		passwordParam.setParameterValue(password);
+		passwordParam.setParameterValue(password); 
 		map.add(usernameParam);
 		map.add(passwordParam);
 		precheck.run(map);

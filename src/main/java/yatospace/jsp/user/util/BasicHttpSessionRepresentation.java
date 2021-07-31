@@ -20,7 +20,7 @@ public class BasicHttpSessionRepresentation implements SessionRepresentation{
 	
 	@Override
 	public BasicSessionDescriptor getDescriptor() {
-		return null;
+		return descriptor;
 	}
 
 	public HttpSession getSession() {

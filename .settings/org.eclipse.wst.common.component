@@ -3,8 +3,9 @@
     <wb-module deploy-name="034_YS_Users">
         <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
-        <wb-resource deploy-path="/" source-path="/src/main/webaap-register"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/web"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp-register"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp-sessions"/>
                 
         <property name="context-root" value="034_YS_Users"/>
                 
